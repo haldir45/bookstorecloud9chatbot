@@ -13,19 +13,27 @@ use HTTP::Status;
 use utf8;
 use DBI();
 use feature "switch";
-
+use Scalar::Util qw(looks_like_number);
 
 my $permanent_token = "EAAOGFe8d8K4BAM5aeLt36ZBDNnfJHBFcuft06LaYb0hXmMNvepaf6fYGsYk0sHUkMvdLm6FrXCQ3z1qlLyilBx2u61nAzBNeShGHpyxFrwasVLgzAbkZCSU3vfZCjgB27j1cItcH5g2wvNKZAKFUWvW1cQrUKE5Nkoa9Nox6SwZDZD";
+my %hash_table = ('TGI FRIDAYS προσφορά' => "entertainment_page_7_tgi_offer",'VOLTA FUN TOWN προσφορά'=>"entertainment_page_7_voltafuntown_offer");
 
-sub switchFun{
-  my $index = shift;
-	my $index1 = "hello";
-	#print $index;
- if(index($index,$index1) != -1){
-	 print $index;
- }
+
+
+sub functFun{
+  my $thingy = shift;
+
+
+  given(lc $thingy){
+      when("hello") {print $thingy}
+      when(looks_like_number($thingy)) { print $thingy}
+      default {      print "$thingy"}
+
+
+  }
 
 }
+
 
 
 
@@ -90,7 +98,9 @@ sub send_reply_to_callbacks{
 
    when (index($message_text,"offer") != -1)  {  send_hash_offer($message_recipient_id,$message_text)}
 
-	 default {send_hash_message($reply_message,$message_recipient_id)}
+   when(index($message_text,"code") != -1)    {  send_hash_message($message_recipient_id,"Πληκτρολόγησε τον αριθμό σου για να πάρεις κωδικό.")}
+
+	 default {send_hash_message($message_recipient_id,$reply_message)}
 
 	}
 }
@@ -105,14 +115,36 @@ sub send_back_reply{
 		given(lc $message_text){
         when("γεια"){         send_hash_welcome_message($message_recipient_id)}
 			  when("προσφορές"){    send_hash_list($message_recipient_id,"food_offers_page_0")}
+        when(index(lc $message_text,"προσφορά") != -1){
+           for my $name (keys %hash_table) {
+            if(lc $name eq lc $message_text){
+               send_hash_offer($message_recipient_id,$hash_table{$name});
+            }
+          }
+        }
+       when(looks_like_number($message_text)) {check_phone_number($message_text,$message_recipient_id)}
 			  when("κατηγορίες"){   send_hash_categories_message($message_recipient_id)}
-				default {             send_hash_message($reply_message,$message_recipient_id)}
+				default {             send_hash_message($message_recipient_id,$reply_message)}
 
 
 		}
 
 }
 
+sub check_phone_number{
+  my $message_text = shift;
+  my $message_recipient_id = shift;
+
+
+
+  if($message_text =~ m/^[0-9]{10}$/){
+        send_hash_message(  $message_recipient_id,"Ο αριθμός σου είναι $message_text");
+    #  $Session->{validate_phone_number} = 1;
+  }else{
+      send_hash_message( $message_recipient_id,"Ο αριθμός $message_text που πληκτρολόγησες δεν είναι σωστός");
+  }
+
+}
 
 sub send_hash_welcome_message{
   my $reply_recipient = shift;
@@ -137,14 +169,17 @@ sub send_hash_categories_message{
 "buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"entertainment_offers_page_0"}]},{"title"=> "Αυτοκίνητο","subtitle"=>"Προσφορές και στις μετακινήσεις.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"car_offers_page_0"}]},
 {"title"=> "Φαγητό & Καφές","subtitle"=>"Προσφορές στο φαγητό και στο καφέ.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"food_offers_page_0"}]} ]}}});
 
+
+
   my $post_message_json_data = encode_json(\%hash_message);
 
     post_to_facebook($post_message_json_data);
 
 }
 sub send_hash_message{
-    my $reply_message = shift;
     my $reply_recipient = shift;
+    my $reply_message = shift;
+
 
 
       my %hash_message = ('recipient'=>{'id'=>$reply_recipient},'message'=>{'text' => $reply_message});
@@ -158,17 +193,57 @@ sub send_hash_offer{
   my $reply_recipient = shift;
   my $payload_offer = shift;
 
+
   my @json_array_fields = get_json_offer($payload_offer);
 
   my $index = 0;
 
 	 my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","image_aspect_ratio"=>"square","elements"=>
 	 [{"title"=>"$json_array_fields[$index++]","image_url"=>"$json_array_fields[$index++]","subtitle"=>"$json_array_fields[$index++]",
-	 "buttons"=>[{"type"=>"postback","title"=>"θέλω προσφορά","payload"=>"$json_array_fields[$index++] code"}]} ]}}});
+	 "buttons"=>[{"type"=>"postback","title"=>"θέλω προσφορά","payload"=>"$json_array_fields[0] code"}]} ]}}});
 
 	 my $post_message_json_data = encode_json(\%hash_message);
 
 		 post_to_facebook($post_message_json_data);
+
+}
+sub send_hash_list1{
+  my $reply_recipient = shift;
+  my $page_number = shift;
+
+  my $index = 0;
+  my $hash_list_index = 0;
+
+
+  my @json_array_fields = get_json_offers($page_number);
+
+  my $json_array_fields_length = scalar @json_array_fields;
+
+  my %hash_list = ('recipient'=>{'id'=>$reply_recipient},'message'=>{'attachment'=>{'type'=>'template','payload'=>{'template_type'=>'generic',"image_aspect_ratio"=>"square",'elements'=>
+	[{'title'=>"",'image_url'=>"",'subtitle'=>"",
+	'buttons'=>[{'type'=>'','title'=>"",'payload'=>""}] }]}}});
+
+  do{
+      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{title} = $json_array_fields[$index++];
+      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{image_url} = $json_array_fields[$index++];
+      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{subtitle} = $json_array_fields[$index++];
+      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{type} = "postback";
+      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{title} = "$hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{title} offer";
+      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{payload} = $json_array_fields[16];
+      $index++;
+
+      $hash_list_index++;
+
+  }while($index < $json_array_fields_length-1);
+
+   print $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{0};
+  if($hash_list_index < 2){
+    #   send_hash_offer($reply_recipient,$hash_list{message}{attachment}{payload}{elements}[0]{buttons}[0]{payload});
+
+  }else{
+    #  my $post_message_json_data = encode_json(\%hash_list);
+    #  post_to_facebook($post_message_json_data);
+  }
 
 }
 
@@ -257,7 +332,7 @@ sub get_json_offer{
    $ua->timeout(30);
 
 
-     my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.asp";
+     my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.json";
      my $res = $ua->request(HTTP::Request::Common::GET $graph_url);
 
 
@@ -299,7 +374,7 @@ sub get_json_offers{
    $ua->timeout(15);
 
 
-     my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.asp";
+     my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.json";
      my $res = $ua->request(HTTP::Request::Common::GET $graph_url);
 
         if (!$res->is_success){

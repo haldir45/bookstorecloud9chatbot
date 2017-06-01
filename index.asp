@@ -12,9 +12,9 @@
 #authorize();
 #get_user_id();
 
-test_hash("10203981305669572","entertainment_offers_page_8");
-
-
+#test_hash("10203981305669572","entertainment_offers_page_8");
+functFun("ada");
+#send_hash_list1("10203981305669572","entertainment_offers_page_8");
 #switchFun("hello my friend");
 
 %>
