@@ -1,0 +1,149 @@
+sub send_cgi_ok{
+
+  my $d = HTTP::Daemon->new || die;
+
+  my $c = $d->accept ;
+     $c->send_status_line("200");
+               #$c->send_basic_header("200");
+       $c->close;
+       undef($c);
+       #my $q = CGI->new;print $q->header(    -'type'=>'text/html',    -'status'=>'ok,'   -'code'=>"200" );
+}
+
+sub send_status_ok{
+
+    my $ua = LWP::UserAgent->new;
+
+    my $url = "https://graph.facebook.com/v2.9/me/messages?access_token=".$permanent_token;
+
+    my $req = HTTP::Request->new(POST => $url);
+    $req->header('type'=>'text/html','status'=>"200");
+
+    $req->content("ok");
+    print $req->dump;
+    my $resp = $ua->request($req);
+
+    if($resp->is_success) {
+
+      my $message = $resp->decoded_content;
+
+      warn "Received reply send status ok: $message\n";
+      warn "HTTP Code: $resp->code\n";
+    }
+    else {
+      print  "HTTP POST error code: ", $resp->code, "\n";
+      print "HTTP POST error message: ", $resp->message, "\n";
+    }
+
+}
+
+
+
+---------------------------------------------------------------
+#warn "PES KATI1: Γεια";
+#warn "PES KATI3: $message_text";
+#if($message_text eq "Γεια"){
+# warn "Einai idia";
+#}
+
+#print "Encode::Decode::A:".Encode::decode_utf8($message_text);
+
+#warn "Message_Decoded_UTF8B: ".$message_text;
+
+#$message_text = Encode::encode_utf8($message_text);
+
+
+
+  my $ua = new LWP::UserAgent;
+    # $ua->agent("facebook-messenger-perl/0.1");
+     my $url = "https://graph.facebook.com/v2.9/me/messages?";
+
+
+        if ($req->is_success) {
+            my $message = $req->decoded_content;
+            warn "Received reply: $message\n";
+       }
+      else {
+           warn "HTTP POST error code: ", $req->code, "\n";
+           warn "HTTP POST error message: ", $req->message, "\n";
+      }
+
+
+      my $req_parameters = [
+        access_token =>  $permanent_token,
+        message   =>    $post_json_data
+
+      ];
+
+        my $req = $ua->request(HTTP::Request::Common::POST $url, $req_parameters);
+
+my $greek_text = "\xce\x93\xce\xb5\xce\xb9\xce\xb1";
+print "Greek: ".  $greek_text;
+ #Encode::decode_utf8($greek_text);
+#Encode::decode("utf-8",$greek_text);
+#print "Decode_text: ". $greek_text;
+if($greek_text eq "Γεια"){
+  print "Eipe hello";
+}
+--------------------------------------------------------------------------
+'recipient'=>{'id'=>$reply_recipient},'message'=>{'attachment'=>{'type'=>'template','payload'=>{'template_type'=>'list',"top_element_style"=>"compact",'elements'=>
+[{'title'=>"$json_array_fields[$index++]",'image_url'=>"https://public.arx.net/~ctsantas/Perl/images/simplyburgers.png",'subtitle'=>"$json_array_fields[2]",
+'buttons'=>[{'type'=>'postback','title'=>'Simply Burgers offer','payload'=>'simply burger offer'}]},
+{'title'=>"Domino's Pizza",'image_url'=>"https://public.arx.net/~ctsantas/Perl/images/pizzadominos.png",'subtitle'=>"Αγόρασε όσες πίτσες θέλεις και πάρε άλλες τόσες ΔΩΡΟ!",
+'buttons'=>[{'type'=>'postback','title'=>"Domino's Pizza offer",'payload'=>"domino's pizza offer"}]},
+{'title'=>"Mikel",'image_url'=>"https://public.arx.net/~ctsantas/Perl/images/mikel.png",'subtitle'=>"Aγόρασε 1 ρόφημα και πάρε άλλο 1 ΔΩΡΟ!",
+'buttons'=>[{'type'=>'postback','title'=>"Mikel offer",'payload'=>"mikel offer"}]},
+{'title'=>"FORKY",'image_url'=>"https://public.arx.net/~ctsantas/Perl/images/forky.jpg",'subtitle'=>"Κέρδισε έκπτωση 30% στις παραγγελίες σου!",
+'buttons'=>[{'type'=>'postback','title'=>"Forky offer",'payload'=>"forky offer"}]}
+],"buttons"=> [{"title"=> "View More","type"=> "postback", "payload"=> "page_1"}] }}}
+
+
+sub send_hash_list1{
+  my $reply_recipient = shift;
+  my $page_number = shift;
+
+  my @json_array_fields = get_json_offers($page_number);
+
+  my $index = 0;
+  my %hash_list = ('recipient'=>{'id'=>$reply_recipient},'message'=>{'attachment'=>{'type'=>'template','payload'=>{'template_type'=>'list',"top_element_style"=>"compact",'elements'=>
+	[{'title'=>$json_array_fields[$index++],'image_url'=>$json_array_fields[$index++],'subtitle'=>$json_array_fields[$index++],
+	'buttons'=>[{'type'=>'postback','title'=>"$json_array_fields[0] offer",'payload'=>$json_array_fields[$index++]}]},
+	{'title'=>$json_array_fields[$index++],'image_url'=>$json_array_fields[$index++],'subtitle'=>$json_array_fields[$index++],
+	'buttons'=>[{'type'=>'postback','title'=>"$json_array_fields[4] offer",'payload'=>$json_array_fields[$index++]}]},
+	{'title'=>$json_array_fields[$index++],'image_url'=>$json_array_fields[$index++],'subtitle'=>$json_array_fields[$index++],
+	'buttons'=>[{'type'=>'postback','title'=>"$json_array_fields[8] offer",'payload'=>$json_array_fields[$index++]}]},
+	{'title'=>$json_array_fields[$index++],'image_url'=>$json_array_fields[$index++],'subtitle'=>$json_array_fields[$index++],
+	'buttons'=>[{'type'=>'postback','title'=>"$json_array_fields[12] offer",'payload'=>$json_array_fields[$index++]}]}
+	],"buttons"=> [{"title"=> "View More","type"=> "postback", "payload"=> "$json_array_fields[$index++]"}] }}});
+
+
+  my $post_message_json_data = encode_json(\%hash_list);
+
+  post_to_facebook($post_message_json_data);
+
+
+}
+#------------------------------------------------------------------------
+#Form
+
+#my $query = $Request->Form;
+#my @query_form = split('=',$query);
+
+#my %hash_query =%{$query_form[1]};
+#warn "hash_query:".scalar %hash_query;
+#if(scalar %hash_query){
+# warn "Dumperrrrrrr:". Dumper %{$query_form[1]};
+#    warn "Empty:".$query_form[1];
+#}else{
+# warn "I am empty";
+#}
+
+
+#my @list = decode_json_reply($query_form[1]);
+#my $a;
+#foreach $a (@list){
+#    warn "Piano5: $a\n";
+#}
+
+
+#my %hash_query =%{$query};
