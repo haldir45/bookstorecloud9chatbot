@@ -21,16 +21,12 @@ my %hash_table = ('TGI FRIDAYS προσφορά' => "entertainment_page_7_tgi_of
 
 
 sub functFun{
-  my $thingy = shift;
-
-
-  given(lc $thingy){
-      when("hello") {print $thingy}
-      when(looks_like_number($thingy)) { print $thingy}
-      default {      print "$thingy"}
-
-
+  my $code = 0;
+  for(my $i=0; $i<5;$i++){
+    $code .= int rand(10);
   }
+  return $code;
+
 
 }
 
@@ -63,14 +59,16 @@ sub decode_json_reply{
   #If the message we recieved is a payload send back the option you choose
   #else if is a  message delivered callback send a status ok
   my @message = ($message_text,$message_sender_id);
-    if($message_payload){
+    if(defined $message_payload){
       warn "AN01";
       send_reply_to_callbacks($message_payload,$message_sender_id);
-   }elsif($message_watermark){
+   }
+   if(defined $message_watermark){
         warn "AN02";
     #  send_cgi_ok();
       #  send_status_ok();
-   }else{
+   }
+   if(defined $message_text){
            warn "AN03 $message_text";
 
           send_back_reply(@message);
@@ -98,7 +96,7 @@ sub send_reply_to_callbacks{
 
    when (index($message_text,"offer") != -1)  {  send_hash_offer($message_recipient_id,$message_text)}
 
-   when(index($message_text,"code") != -1)    {  send_hash_message($message_recipient_id,"Πληκτρολόγησε τον αριθμό σου για να πάρεις κωδικό.")}
+   when(index($message_text,"code") != -1)    {  send_hash_message($message_recipient_id,"Πληκτρολόγησε τον αριθμό του κινητού σου για να πάρεις κωδικό.")}
 
 	 default {send_hash_message($message_recipient_id,$reply_message)}
 
@@ -111,7 +109,7 @@ sub send_back_reply{
 
     my $reply_message = "Δεν καταλαβαίνω";
 
-
+    warn "MEssageggg: $message_text";
 		given(lc $message_text){
         when("γεια"){         send_hash_welcome_message($message_recipient_id)}
 			  when("προσφορές"){    send_hash_list($message_recipient_id,"food_offers_page_0")}
@@ -123,8 +121,8 @@ sub send_back_reply{
           }
         }
        when(looks_like_number($message_text)) {check_phone_number($message_text,$message_recipient_id)}
-			  when("κατηγορίες"){   send_hash_categories_message($message_recipient_id)}
-				default {             send_hash_message($message_recipient_id,$reply_message)}
+			 when("κατηγορίες"){   send_hash_categories_message($message_recipient_id)}
+			#default {             send_hash_message($message_recipient_id,$reply_message)}
 
 
 		}
@@ -135,10 +133,11 @@ sub check_phone_number{
   my $message_text = shift;
   my $message_recipient_id = shift;
 
+  #$message_text =~ m/^[0-9]{10}$/
 
-
-  if($message_text =~ m/^[0-9]{10}$/){
+  if(get_json_phone_numbers($message_text)){
         send_hash_message(  $message_recipient_id,"Ο αριθμός σου είναι $message_text");
+        send_hash_message(  $message_recipient_id,"Ο κωδικός σου είναι ".functFun());
     #  $Session->{validate_phone_number} = 1;
   }else{
       send_hash_message( $message_recipient_id,"Ο αριθμός $message_text που πληκτρολόγησες δεν είναι σωστός");
@@ -146,12 +145,14 @@ sub check_phone_number{
 
 }
 
+
+
 sub send_hash_welcome_message{
   my $reply_recipient = shift;
 
   #my @user_info = get_started_button($reply_recipient);
     my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","image_aspect_ratio"=>"square","elements"=>
-    [{"title"=>"Καλωσήρθατε στο Vodafone ThankYou chatbot","image_url"=>"https://public.arx.net/~ctsantas/Perl/images/vodafone_logo.jpg","subtitle"=>"We\'ve got the right hat for you.",
+    [{"title"=>"Καλωσήρθατε στο Vodafone ThankYou chatbot","image_url"=>"https://public.arx.net/~ctsantas/Perl/images/vodafone_logo.jpg","subtitle"=>"We\'ve got the right deals for you.",
     "buttons"=>[{"type"=>"postback","title"=>"Δώσε Κατηγορίες","payload"=>"categories list"}]} ]}}});
 
     my $post_message_json_data = encode_json(\%hash_message);
@@ -200,7 +201,7 @@ sub send_hash_offer{
 
 	 my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","image_aspect_ratio"=>"square","elements"=>
 	 [{"title"=>"$json_array_fields[$index++]","image_url"=>"$json_array_fields[$index++]","subtitle"=>"$json_array_fields[$index++]",
-	 "buttons"=>[{"type"=>"postback","title"=>"θέλω προσφορά","payload"=>"$json_array_fields[0] code"}]} ]}}});
+	 "buttons"=>[{"type"=>"postback","title"=>"θέλω προσφορά","payload"=>"$json_array_fields[0] code"},{"type"=>"postback","title"=>"Προσφορές","payload"=>"$json_array_fields[$index++]"}] } ]}}});
 
 	 my $post_message_json_data = encode_json(\%hash_message);
 
@@ -322,6 +323,37 @@ sub post_to_facebook{
 
 }
 
+sub get_json_phone_numbers{
+
+  my $message_text = shift;
+  my $ua = new LWP::UserAgent;
+  $ua->timeout(30);
+
+
+    my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_phone_numbers.json";
+    my $res = $ua->request(HTTP::Request::Common::GET $graph_url);
+    my $valid_number = 0;
+
+  if(!$res->is_success){
+    $Response->write("Σφάλμα στην επικοινωνία με το facebook .(100)");
+  }else{
+
+    my $graph_res = JSON::decode_json($res->{_content});
+    my $index = 0;
+
+
+    do{
+       if($message_text eq $graph_res->{users}[$index]->{phone_number})
+       {
+           $valid_number = 1;
+       }
+
+        $index++;
+    }while($graph_res->{users}[$index]->{first_name} ne "");
+  }
+
+  return $valid_number;
+}
 
 sub get_json_offer{
    my $message_text = shift;

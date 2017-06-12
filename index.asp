@@ -13,8 +13,9 @@
 #get_user_id();
 
 #test_hash("10203981305669572","entertainment_offers_page_8");
-functFun("ada");
+#functFun("γεια");
 #send_hash_list1("10203981305669572","entertainment_offers_page_8");
 #switchFun("hello my friend");
+#print get_json_phone_numbers("6978279525");
 
 %>
