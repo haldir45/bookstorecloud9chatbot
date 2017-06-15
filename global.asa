@@ -1,6 +1,7 @@
 use strict;
 use warnings 'all';
 
+
 use JSON 'decode_json';
 use JSON 'encode_json';
 use Data::Dumper;
@@ -11,7 +12,6 @@ use CGI;
 use HTTP::Daemon;
 use HTTP::Status;
 use utf8;
-use DBI();
 use feature "switch";
 use Scalar::Util qw(looks_like_number);
 
@@ -19,27 +19,6 @@ my $permanent_token = "EAAOGFe8d8K4BAM5aeLt36ZBDNnfJHBFcuft06LaYb0hXmMNvepaf6fYG
 my %hash_table = ('TGI FRIDAYS προσφορά' => "entertainment_page_7_tgi_offer",'VOLTA FUN TOWN προσφορά'=>"entertainment_page_7_voltafuntown_offer");
 
 
-
-sub functFun{
-  my $code = 0;
-  for(my $i=0; $i<5;$i++){
-    $code .= int rand(10);
-  }
-  return $code;
-
-
-}
-
-
-
-
-sub dbconn {
-	my $dbh;
-	$dbh = DBI->connect( "DBI:Pg:dbname=VodafoneThankYou; host=dbms; port = 5432","postgres","Aej7uN3m", { AutoCommit => 1, pg_server_prepare => 0 } )|| die $DBI::errstr;
-	#$dbh = DBI->connect( "DBI:Pg:dbname=websites_dev; host=192.168.100.135; port = 5432","su_anon","429272thes", { AutoCommit => 1, pg_server_prepare => 0 } )|| die $dbh->errstr;
-	$dbh->do("SET CLIENT_ENCODING TO 'UTF-8'") || die $dbh->errstr."\n";
-	return $dbh;
-}
 sub decode_json_reply{
   #Decoding the message we recieved from the messenger
   my $json_text = shift;
@@ -56,8 +35,7 @@ sub decode_json_reply{
   my $message_payload = $message_res->{entry}[0]->{messaging}[0]->{postback}->{payload};
   my $message_watermark = $message_res->{entry}[0]->{messaging}[0]->{delivery}->{watermark};
 
-  #If the message we recieved is a payload send back the option you choose
-  #else if is a  message delivered callback send a status ok
+  #Ελέγχουμε αν το response είναι μήνυμα,payload callback ή watermark
   my @message = ($message_text,$message_sender_id);
     if(defined $message_payload){
       warn "AN01";
@@ -72,16 +50,13 @@ sub decode_json_reply{
            warn "AN03 $message_text";
 
           send_back_reply(@message);
-      #  warn "Validate phone1: ", $Session->{validate_phone_number};
-      #  if(!$Session->{validate_phone_number}){
-      #     check_phone_number(@message);
-      #  }else{   }
-
    }
 
 
 }
 
+#Έλεγχος της τιμής του payload.Ανάλογα με την τιμή του payload καλούμε την αντίστοιχη τιμή.
+#Πιθανές τιμές categories,offers,offer και code.
 sub send_reply_to_callbacks{
   my $message_text = shift;
   my $message_recipient_id = shift;
@@ -103,16 +78,22 @@ sub send_reply_to_callbacks{
 	}
 }
 
+#Αν το response είναι text τότε απαντάμε με το κατάλληλο μήνυμα
+#αν ανιστοιχεί στις λέξεις: γεια,προσφορές,κατηγορίες,προσφορά.Επίσης ελε΄γχουμε αν είναι αριθμός.
 sub send_back_reply{
     my $message_text = shift;
     my $message_recipient_id = shift;
 
     my $reply_message = "Δεν καταλαβαίνω";
 
-    warn "MEssageggg: $message_text";
+
 		given(lc $message_text){
+
         when("γεια"){         send_hash_welcome_message($message_recipient_id)}
-			  when("προσφορές"){    send_hash_list($message_recipient_id,"food_offers_page_0")}
+
+       when("προσφορές"){    send_hash_list($message_recipient_id,"food_offers_page_0")}
+
+        #Αν το text περιέχει την λέξη προσφορά ελέγχουμε αν μέσα στο μήνυμα υπάρχει το όνομα από κάποια καταχωρημένη προσφορά
         when(index(lc $message_text,"προσφορά") != -1){
            for my $name (keys %hash_table) {
             if(lc $name eq lc $message_text){
@@ -120,8 +101,10 @@ sub send_back_reply{
             }
           }
         }
+
        when(looks_like_number($message_text)) {check_phone_number($message_text,$message_recipient_id)}
-			 when("κατηγορίες"){   send_hash_categories_message($message_recipient_id)}
+
+       when("κατηγορίες"){   send_hash_categories_message($message_recipient_id)}
 			#default {             send_hash_message($message_recipient_id,$reply_message)}
 
 
@@ -129,54 +112,27 @@ sub send_back_reply{
 
 }
 
+#Αποστολή επιβεβαίωσης σωστού αριθμού και κωδικού σε περίπτωση που ο αριθμός είναι δεκαψήφιος και βρίσκεται μέσα στην βάση μας
+#αλλιώς ειδοποιούμε τον χρήστη ότι ο αριθμός δεν είναι σωστός.
 sub check_phone_number{
   my $message_text = shift;
   my $message_recipient_id = shift;
 
-  #$message_text =~ m/^[0-9]{10}$/
-
-  if(get_json_phone_numbers($message_text)){
-        send_hash_message(  $message_recipient_id,"Ο αριθμός σου είναι $message_text");
-        send_hash_message(  $message_recipient_id,"Ο κωδικός σου είναι ".functFun());
+if($message_text =~ m/^[0-9]{10}$/){
+	if(get_json_phone_numbers($message_text)){
+        send_hash_message(  $message_recipient_id,"Ο αριθμός σου είναι $message_text". " (y)");
+        send_hash_message(  $message_recipient_id,"Ο κωδικός σου είναι ".code_generator(). " ;-)");
     #  $Session->{validate_phone_number} = 1;
   }else{
-      send_hash_message( $message_recipient_id,"Ο αριθμός $message_text που πληκτρολόγησες δεν είναι σωστός");
+      send_hash_message( $message_recipient_id,"Ο αριθμός $message_text που πληκτρολόγησες δεν είναι σωστός :-( ");
   }
 
 }
 
 
-
-sub send_hash_welcome_message{
-  my $reply_recipient = shift;
-
-  #my @user_info = get_started_button($reply_recipient);
-    my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","image_aspect_ratio"=>"square","elements"=>
-    [{"title"=>"Καλωσήρθατε στο Vodafone ThankYou chatbot","image_url"=>"https://public.arx.net/~ctsantas/Perl/images/vodafone_logo.jpg","subtitle"=>"We\'ve got the right deals for you.",
-    "buttons"=>[{"type"=>"postback","title"=>"Δώσε Κατηγορίες","payload"=>"categories list"}]} ]}}});
-
-    my $post_message_json_data = encode_json(\%hash_message);
-
-      post_to_facebook($post_message_json_data);
 }
 
-
-
-sub send_hash_categories_message{
-    my $reply_recipient = shift;
-
-  my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","elements"=>[{"title"=>"Οικογένεια","subtitle"=>"Προσφορές για όλη την οικογένεια.",
-"buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"family_offers_page_0"}]},{"title"=> "Supermarket & Αγορές","subtitle"=>"Προσφορές για Supermarket.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"supermarket_offers_page_0"}]},{"title"=> "Διασκέδαση","subtitle"=>"Διασκέδασε τώρα πιο οικονομικά με 1+1.",
-"buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"entertainment_offers_page_0"}]},{"title"=> "Αυτοκίνητο","subtitle"=>"Προσφορές και στις μετακινήσεις.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"car_offers_page_0"}]},
-{"title"=> "Φαγητό & Καφές","subtitle"=>"Προσφορές στο φαγητό και στο καφέ.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"food_offers_page_0"}]} ]}}});
-
-
-
-  my $post_message_json_data = encode_json(\%hash_message);
-
-    post_to_facebook($post_message_json_data);
-
-}
+#Αποστολή μηνύματος text στον χρήστη.
 sub send_hash_message{
     my $reply_recipient = shift;
     my $reply_message = shift;
@@ -190,136 +146,183 @@ sub send_hash_message{
         post_to_facebook($post_message_json_data);
 }
 
+#Αποστολή template με type generic.To template αυτό στέλνεται όταν ο χρήστης στέλνει γεια στο botaki μας.
+#Ο χρήστης πατώντας το κουμπί με τίτλο "Δώσε κατηγορίες" μπορεί να ενημερωθεί για τις κατηγορίες των προσφορών.
+sub send_hash_welcome_message{
+  my $reply_recipient = shift;
+
+  #my @user_info = get_started_button($reply_recipient);
+    my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","image_aspect_ratio"=>"square","elements"=>
+    [{"title"=>"Καλωσήρθατε στο Vodafone ThankYou chatbot","image_url"=>"https://thankyou.vodafone.gr/images/logo.png","subtitle"=>"We\'ve got the right deals for yoυ.",
+    "buttons"=>[{"type"=>"postback","title"=>"Δώσε Κατηγορίες","payload"=>"categories list"}]} ]}}});
+
+    my $post_message_json_data = encode_json(\%hash_message);
+
+      post_to_facebook($post_message_json_data);
+}
+
+
+#Επιστροφή template με type generic με τις κατηγορίες των προσφορών.
+#Σε κάθε κατηγορία υπάρχει ένα κουμπί με τίτλο "Δώσε προσφορές", πατώντας το κουμπί ο χρήστης βλέπει τις πρώτες προσφορές της αντίστοιχης κατηγορίας
+sub send_hash_categories_message{
+    my $reply_recipient = shift;
+
+  my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","elements"=>[{"title"=>"Οικογένεια","subtitle"=>"Προσφορές για όλη την οικογένεια.",
+"buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"family_offers_page_0"}]},{"title"=> "Supermarket & Αγορές","subtitle"=>"Προσφορές για Supermarket.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"supermarket_offers_page_0"}]},{"title"=> "Διασκέδαση","subtitle"=>"Διασκέδασε τώρα πιο οικονομικά με 1+1.",
+"buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"entertainment_offers_page_0"}]},{"title"=> "Αυτοκίνητο","subtitle"=>"Προσφορές και στις μετακινήσεις.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"car_offers_page_0"}]},
+{"title"=> "Φαγητό & Καφές","subtitle"=>"Προσφορές στο φαγητό και στο καφέ.","buttons"=>[{"type"=>"postback","title"=>"Δώσε προσφορές","payload"=>"food_offers_page_0"}]} ]}}});
+
+
+
+  my $post_message_json_data = encode_json(\%hash_message);
+
+    post_to_facebook($post_message_json_data);
+}
+
+#Επιστροφή template με type generic. Το template αυτό παρουσίαζει στον χρήστη μία προσφορά και παραλλήλα μπορεί
+#να πάρει κωδικό προσφοράς αλλά και να επιστρέψει πίσω στις προσφορές πατώντας τα κουμπία με τίτλος "Θέλω Προσφορά" και "Προσφορές" αντίστοιχα.
 sub send_hash_offer{
   my $reply_recipient = shift;
   my $payload_offer = shift;
 
 
-  my @json_array_fields = get_json_offer($payload_offer);
+  my %json_array_fields = get_json_offer($payload_offer);
 
-  my $index = 0;
 
-	 my %hash_message = ("recipient"=>{"id"=>"$reply_recipient"},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","image_aspect_ratio"=>"square","elements"=>
-	 [{"title"=>"$json_array_fields[$index++]","image_url"=>"$json_array_fields[$index++]","subtitle"=>"$json_array_fields[$index++]",
-	 "buttons"=>[{"type"=>"postback","title"=>"θέλω προσφορά","payload"=>"$json_array_fields[0] code"},{"type"=>"postback","title"=>"Προσφορές","payload"=>"$json_array_fields[$index++]"}] } ]}}});
+
+	 my %hash_message = ("recipient"=>{"id"=>$reply_recipient},"message"=>{"attachment"=>{"type"=>"template","payload"=>{"template_type"=>"generic","image_aspect_ratio"=>"square","elements"=>
+	 [{"title"=>"$json_array_fields{title}","image_url"=>"$json_array_fields{image_url}","subtitle"=>"$json_array_fields{subtitle}",
+	 "buttons"=>[{"type"=>"postback","title"=>"θέλω προσφορά","payload"=>"$json_array_fields{title} code"},{"type"=>"postback","title"=>"Προσφορές","payload"=>"$json_array_fields{current_page}"}] } ]}}});
 
 	 my $post_message_json_data = encode_json(\%hash_message);
-
-		 post_to_facebook($post_message_json_data);
-
-}
-sub send_hash_list1{
-  my $reply_recipient = shift;
-  my $page_number = shift;
-
-  my $index = 0;
-  my $hash_list_index = 0;
-
-
-  my @json_array_fields = get_json_offers($page_number);
-
-  my $json_array_fields_length = scalar @json_array_fields;
-
-  my %hash_list = ('recipient'=>{'id'=>$reply_recipient},'message'=>{'attachment'=>{'type'=>'template','payload'=>{'template_type'=>'generic',"image_aspect_ratio"=>"square",'elements'=>
-	[{'title'=>"",'image_url'=>"",'subtitle'=>"",
-	'buttons'=>[{'type'=>'','title'=>"",'payload'=>""}] }]}}});
-
-  do{
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{title} = $json_array_fields[$index++];
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{image_url} = $json_array_fields[$index++];
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{subtitle} = $json_array_fields[$index++];
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{type} = "postback";
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{title} = "$hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{title} offer";
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{payload} = $json_array_fields[16];
-      $index++;
-
-      $hash_list_index++;
-
-  }while($index < $json_array_fields_length-1);
-
-   print $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{0};
-  if($hash_list_index < 2){
-    #   send_hash_offer($reply_recipient,$hash_list{message}{attachment}{payload}{elements}[0]{buttons}[0]{payload});
-
-  }else{
-    #  my $post_message_json_data = encode_json(\%hash_list);
-    #  post_to_facebook($post_message_json_data);
-  }
+   post_to_facebook($post_message_json_data);
+		 #return $post_message_json_data;
 
 }
 
+#Επιστροφή template με type list. Το συγκεκριμένο template παρουσίαζει 4 προσφορές από μία κατηγορία στον χρήστη. Ο χρήστης μπορεί να πάρει επιλέξει
+#μία προσφορά πατώντας το κουμπί με τίτλο "Δώσε προσφορά" αλλά και να πάρει τις επόμενες 4 προσφορές με το κουμπί "View more".
 sub send_hash_list{
   my $reply_recipient = shift;
   my $page_number = shift;
 
-  my $index = 0;
-  my $hash_list_index = 0;
+  my $hash_list_index=0;
+
+  my %json_array_fields;
 
 
-  my @json_array_fields = get_json_offers($page_number);
-
-  my $json_array_fields_length = scalar @json_array_fields;
-
-  my %hash_list = ('recipient'=>{'id'=>$reply_recipient},'message'=>{'attachment'=>{'type'=>'template','payload'=>{'template_type'=>'list',"top_element_style"=>"compact",'elements'=>
+  my %hash_list = ('recipient'=>{'id'=> $reply_recipient},'message'=>{'attachment'=>{'type'=>'template','payload'=>{'template_type'=>'list',"top_element_style"=>"compact",'elements'=>
 	[{'title'=>"",'image_url'=>"",'subtitle'=>"",
 	'buttons'=>[{'type'=>'','title'=>"",'payload'=>""}] }],"buttons"=> [{"title"=> "View More","type"=> "postback", "payload"=> ""}] }}});
 
-  do{
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{title} = $json_array_fields[$index++];
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{image_url} = $json_array_fields[$index++];
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{subtitle} = $json_array_fields[$index++];
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{type} = "postback";
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{title} = "$hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{title} offer";
-      $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{payload} = $json_array_fields[$index++];
 
-      $hash_list_index++;
+  for($hash_list_index; $hash_list_index < 4; $hash_list_index++){
 
-  }while($index < $json_array_fields_length-1);
+    %json_array_fields = get_json_offers($page_number,$hash_list_index);
+    warn "hello";
+     if( $json_array_fields{title} ne "" ){
 
-  $hash_list{message}{attachment}{payload}{buttons}[0]{payload} = $json_array_fields[$index++];
+       $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{title} = $json_array_fields{title};
+       $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{image_url} = $json_array_fields{image_url};
+       $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{subtitle} = $json_array_fields{subtitle};
+       $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{type} = "postback";
+       $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{title} = "$json_array_fields{title} offer";
+       $hash_list{message}{attachment}{payload}{elements}[$hash_list_index]{buttons}[0]{payload} = $json_array_fields{payload};
+
+     }else{
+
+       last;
+
+     }
+
+  }
+
+  $hash_list{message}{attachment}{payload}{buttons}[0]{payload} = $json_array_fields{next_page};
 
 
 
-  if($hash_list_index < 2){
-       send_hash_offer($reply_recipient,$hash_list{message}{attachment}{payload}{elements}[0]{buttons}[0]{payload});
+  if($hash_list_index == 1){
+      send_hash_offer($reply_recipient,$hash_list{message}{attachment}{payload}{elements}[$hash_list_index-1]{buttons}[0]{payload});
 
   }else{
+
       my $post_message_json_data = encode_json(\%hash_list);
       post_to_facebook($post_message_json_data);
+      #return $post_message_json_data;
+
   }
 
 }
 
 
-sub post_to_facebook{
-  my $post_message_json_data = shift;
+sub get_json_offers{
+	my $message_text = shift;
+    my $index = shift;
+	my @payload_info = split /_/ , $message_text;
+  my %json_array_fields = ("title"=>"","image_url"=>"","subtitle"=>"","current_page"=>"","payload"=>"","next_page"=>"");;
 
-  my $ua = LWP::UserAgent->new;
+   my $ua = new LWP::UserAgent;
+   $ua->timeout(15);
 
-  my $url = "https://graph.facebook.com/v2.9/me/messages?access_token=".$permanent_token;
+     my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.json";
+     my $res = $ua->request(HTTP::Request::Common::GET $graph_url);
+
+        if (!$res->is_success){
+              $Response->write("Σφάλμα στην επικοινωνία με το facebook .(100)");
+        }else{
+          my $graph_res = JSON::decode_json($res->{_content});
+
+          my $offer = "$payload_info[0]_$payload_info[1]";
+          my $page = $payload_info[2].$payload_info[3];
+
+	          	$json_array_fields{title} = $graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{title};
+							$json_array_fields{image_url} = $graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{image_url};
+							$json_array_fields{subtitle} = $graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{subtitle};
+							$json_array_fields{payload} = $graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{payload};
+
+            $json_array_fields{next_page} = $graph_res->{$offer}[$payload_info[3]]->{$page}[4]->{next_page};
+
+  			}
+          return %json_array_fields;
+
+}
+
+sub get_json_offer{
+	my $message_text = shift;
+	my @payload_info = split /_/ , $message_text;
+	my %json_array_fields = ("title"=>"","image_url"=>"","subtitle"=>"","current_page"=>"","payload"=>"");
+
+	my $ua = new LWP::UserAgent;
+	$ua->timeout(30);
 
 
-  my $req = HTTP::Request->new(POST => $url);
-  $req->header('Content-type' => 'application/json');
+		my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.json";
+		my $res = $ua->request(HTTP::Request::Common::GET $graph_url);
 
 
-  $req->content($post_message_json_data);
+	if(!$res->is_success){
+		$Response->write("Σφάλμα στην επικοινωνία με το facebook .(100)");
+	}else{
+		my $graph_res = JSON::decode_json($res->{_content});
+		my $offers = $payload_info[0]."_offers";
+		my $page   = $payload_info[1].$payload_info[2];
+    my $index = 0;
+		do{
+			if($graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{payload} eq $message_text){
+				$json_array_fields{title}=$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{title};
+			  $json_array_fields{image_url}=$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{image_url};
+			  $json_array_fields{subtitle}=$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{subtitle};
+				$json_array_fields{current_page}=$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{current_page};
+				$json_array_fields{payload}=$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{payload};
 
-  warn $req->dump;
-  #send_writing(); you have to pass as parameter the $messenger_recipient because it's a topic variable in decode_json_reply function
-  my $resp = $ua->request($req);
+			}
 
-    if ($resp->is_success) {
-
-      my $message = $resp->decoded_content;
+            $index++;
+		}while($graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{title} ne "");
+	}
 
 
-      warn "Received reply: $message\n";
-    }
-    else {
-      warn  "HTTP POST error code: ", $resp->code, "\n";
-      warn "HTTP POST error message: ", $resp->message, "\n";
-    }
+	 return %json_array_fields;
 
 }
 
@@ -355,92 +358,46 @@ sub get_json_phone_numbers{
   return $valid_number;
 }
 
-sub get_json_offer{
-   my $message_text = shift;
-   my @payload_info = split /_/ , $message_text;
-   my @json_array_fields;
+sub post_to_facebook{
+  my $post_message_json_data = shift;
 
-   my $ua = new LWP::UserAgent;
-   $ua->timeout(30);
+  my $ua = LWP::UserAgent->new;
 
-
-     my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.json";
-     my $res = $ua->request(HTTP::Request::Common::GET $graph_url);
+  my $url = "https://graph.facebook.com/v2.9/me/messages?access_token=".$permanent_token;
 
 
-   if(!$res->is_success){
-     $Response->write("Σφάλμα στην επικοινωνία με το facebook .(100)");
-   }else{
-     my $graph_res = JSON::decode_json($res->{_content});
-     my $offers = $payload_info[0]."_offers";
-     my $page   = $payload_info[1].$payload_info[2];
-     my $index = 0;
+  my $req = HTTP::Request->new(POST => $url);
+  $req->header('Content-type' => 'application/json');
 
 
-     do{
+  $req->content($post_message_json_data);
 
-       if($graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{payload} eq $message_text){
-         push(@json_array_fields,$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{title});
-         push(@json_array_fields,$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{image_url});
-         push(@json_array_fields,$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{subtitle});
-         push(@json_array_fields,$graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{payload});
+  warn $req->dump;
+  #send_writing(); you have to pass as parameter the $messenger_recipient because it's a topic variable in decode_json_reply function
+  my $resp = $ua->request($req);
 
-       }
+    if ($resp->is_success) {
 
-
-						 $index++;
-     }while($graph_res->{$offers}[$payload_info[2]]->{$page}[$index]->{title} ne "");
-   }
+      my $message = $resp->decoded_content;
 
 
-    return @json_array_fields;
+      warn "Received reply: $message\n";
+    }
+    else {
+      warn  "HTTP POST error code: ", $resp->code, "\n";
+      warn "HTTP POST error message: ", $resp->message, "\n";
+    }
 
 }
 
-sub get_json_offers{
-	my $message_text = shift;
-	my @payload_info = split /_/ , $message_text;
-  my @json_array_fields;
 
-   my $ua = new LWP::UserAgent;
-   $ua->timeout(15);
-
-
-     my $graph_url = "https://public.arx.net/~ctsantas/Perl/vodafone_thank_you_offers.json";
-     my $res = $ua->request(HTTP::Request::Common::GET $graph_url);
-
-        if (!$res->is_success){
-              $Response->write("Σφάλμα στην επικοινωνία με το facebook .(100)");
-        }else{
-          my $graph_res = JSON::decode_json($res->{_content});
-				  my $index = 0;
-          my $offer = $payload_info[0]."_".$payload_info[1];
-          my $page = $payload_info[2].$payload_info[3];
-
-
-						do{
-
-	          	push(@json_array_fields,$graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{title});
-							push(@json_array_fields,$graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{image_url});
-							push(@json_array_fields,$graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{subtitle});
-							push(@json_array_fields,$graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{payload});
-
-						     #   print ( $graph_res->{$message_text}[$inde], $graph_res->{$message_text}[$index]->{image_url}, $graph_res->{$message_text}[$index]->{subtitle}, $graph_res->{$message_text}[$index]->{payload});
-									#	 print ( $graph_res->{car_offers}[$index]->{title}, $graph_res->{car_offers}[$index]->{image_url}, $graph_res->{car_offers}[$index]->{subtitle}, $graph_res->{car_offers}[$index]->{payload});
-
-
-							 $index++;
-					 }while($graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{title} ne "");
-
-					 		#print @json_array_fields;
-              #print $graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{next_page};
-              push(@json_array_fields,$graph_res->{$offer}[$payload_info[3]]->{$page}[$index]->{next_page});
-  			}
-
-          return @json_array_fields;
-
+sub code_generator{
+	my $code = 0;
+	for(my $i=0; $i<5;$i++){
+		$code .= int rand(10);
+	}
+	return $code;
 }
-
 
 
 sub authorize{

@@ -5,24 +5,28 @@
 					"title": "Simply Burgers",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/46.jpg",
 					"subtitle": "Αγόρασε 1 burger meal ή Single και πάρε άλλο 1 ΔΩΡΟ κάθε Δευτέρα έως Πέμπτη.",
+					"current_page": "food_offers_page_0",
 					"payload": "food_page_0_simplyburger_offer"
 				},
 			  {
 					"title": "Domino's Pizza",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/48.jpg",
 					"subtitle": "Αγόρασε όσες πίτσες θέλεις και πάρε άλλες τόσες ΔΩΡΟ!",
+					"current_page": "food_offers_page_0",
 					"payload": "food_page_0_dominospizza_offer"
 			  },
 				{
 					"title": "Mikel",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/152.jpg",
 					"subtitle": "Aγόρασε 1 ρόφημα και πάρε άλλο 1 ΔΩΡΟ!",
+					"current_page": "food_offers_page_0",
 					"payload": "food_page_0_mikel_offer"
 		   	},
 			  {
 					"title": "FORKY",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/179.jpg",
 					"subtitle": "Κέρδισε έκπτωση 30% στις παραγγελίες σου!",
+					"current_page": "food_offers_page_0",
 					"payload": "food_page_0_forky_offer"
 		    },
 				 {"next_page":"food_offers_page_1"}
@@ -33,24 +37,28 @@
 					"title": "e-FOOD.gr",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/177.jpg",
 					"subtitle": "Κέρδισε τώρα 10% έκπτωση στην παραγγελία σου!",
+					"current_page": "food_offers_page_1",
 					"payload": "food_page_1_efood_offer"
 				},
 				{
 					"title": "E-TABLE",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/49.jpg",
 					"subtitle": "10€ έκπτωση σε περισσότερα από 140 εστιατόρια σε Αθήνα και Θεσσαλονίκη",
+					"current_page": "food_offers_page_1",
 					"payload": "food_page_1_etable_offer"
 				},
 				{
 					"title": "DOMINO'S PIZZA Για την Οικογένεια",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/48.jpg",
 					"subtitle": "Αγόρασε όσες πίτσες θέλεις και πάρε άλλες τόσες ΔΩΡΟ!",
+					"current_page": "food_offers_page_1",
 					"payload": "food_page_1_dominospizzafamily_offer"
 				},
 				{
 					"title": "SIMPLY BURGERS Για την Οικογένεια",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/46.jpg",
 					"subtitle": "Αγόρασε 2 burger meals ή Singles από τα Simply Burgers και πάρε άλλα 2 ΔΩΡΟ!",
+			   	"current_page": "food_offers_page_1",
 					"payload": "food_page_1_simplyburgersfamily_offer"
 				},
 				 {"next_page":"food_offers_page_0"}
@@ -66,24 +74,28 @@
 	         "title": "EUROLIFE ERB",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/43.png",
 	         "subtitle": "Μείωσε τα ασφάλιστρα του αυτοκινήτου σου!",
+					 "current_page": "car_offers_page_0",
 	         "payload": "car_page_0_eurolifeerb_offer"
 	       },
 	       {
 	         "title": "ParkAround",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/267.jpg",
 	         "subtitle": "Κέρδισε έκπτωση 2€  κάθε εβδομάδα σε ένα από τα 100 συνεργαζόμενα parking",
+					 "current_page": "car_offers_page_0",
 	         "payload": "car_page_0_parkaround_offer"
 	       },
 	       {
 	         "title": "KTEO",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/44.jpg",
 	         "subtitle": "Μείωσε τα έξοδα του αυτοκινήτου στην Auteco!",
+					 "current_page": "car_offers_page_0",
 	         "payload": "car_page_0_kteo_offer"
 	       },
 	       {
 	         "title": "TAXIPLON",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/192.jpg",
 	         "subtitle": "Κέρδισε έκπτωση 3€  κάθε εβδομάδα για διαδρομές άνω των 5€!",
+					 "current_page": "car_offers_page_0",
 	         "payload": "car_page_0_taxiplon_offer"
 	       },
 				  {"next_page":"car_offers_page_0"}
@@ -99,24 +111,28 @@
 	         "title": "P&G ΚΟΥΠΟΝΙΑ ΓΙΑ ΤΟ SUPERMARKET Για την Οικογένεια",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/40.jpg",
 	         "subtitle": "Κουπόνια συνολικής αξίας έως 30 ευρώ!",
+					 "current_page": "family_offers_page_0",
 	         "payload": "family_page_0_p&g_offer"
 	       },
 	       {
 	         "title": "ΚΟΥΠΟΝΙΑ NESTLE NOIAZOMAI Για την Οικογένεια",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/136.png",
 	         "subtitle": "Επιπλέον αποκλειστικά κουπόνια!",
+					 "current_page": "family_offers_page_0",
 	         "payload": "family_page_0_nestle_offer"
 	       },
 	       {
 	         "title": "CINEMA Για την Οικογένεια",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/228.jpg",
 	         "subtitle": "Αγόρασε 2 εισιτήρια για οποιαδήποτε ταινία στο ODEON ή STER και πάρε άλλα 2 ΔΩΡΟ. ",
+					 "current_page": "family_offers_page_0",
 	         "payload": "family_page_0_odeon_offer"
 	       },
 	       {
 	         "title": "SIMPLY BURGERS Για την Οικογένεια",
 	         "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/227.jpg",
 	         "subtitle": "Αγόρασε 2 burger meals ή Singles από τα Simply Burgers και πάρε άλλα 2 ΔΩΡΟ!",
+					 "current_page": "family_offers_page_0",
 	         "payload": "family_page_0_simplyburgers_offer"
 	       },
 				  {"next_page":"family_offers_page_0"}
@@ -131,24 +147,28 @@
 					 "title": "P&G ΚΟΥΠΟΝΙΑ ΓΙΑ ΤΟ SUPERMARKET Για την Οικογένεια",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/40.jpg",
 					 "subtitle": "Κουπόνια συνολικής αξίας έως 30 ευρώ!",
+					 "current_page": "superamarkert_offers_page_0",
 					 "payload": "supermarket_page_0_p&g_offer"
 				 },
 				 {
 					 "title": "ΚΟΥΠΟΝΙΑ NESTLE NOIAZOMAI Για την Οικογένεια",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/136.png",
 					 "subtitle": "Επιπλέον αποκλειστικά κουπόνια!",
+					 "current_page": "superamarkert_offers_page_0",
 					 "payload": "supermarket_page_0_nestle_offer"
 				 },
 				 {
 					 "title": "INTERSPORT",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/172.jpg",
 					 "subtitle": "Κέρδισε τώρα 10€ έκπτωση για αγορές άνω των 60€! ",
+					 "current_page": "superamarkert_offers_page_0",
 					 "payload": "supermarket_page_0_intersport_offer"
 				 },
 				 {
 					 "title": "PRAKTIKER",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/126.png",
 					 "subtitle": "Κέρδισε 15% έκπτωση για αγορές άνω των 60€",
+					 "current_page": "superamarkert_offers_page_0",
 					 "payload": "supermarket_page_0_praktiker_offer"
 				 },
 					{"next_page":"supermarket_offers_page_1"}
@@ -161,24 +181,28 @@
 					"title": "SEPHORA",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/41.jpg",
 					"subtitle": "Αγόρασε 1 προιόν ομορφιάς Sephora ή Priorities και πάρε άλλο 1 ΔΩΡΟ.",
+					"current_page": "superamarkert_offers_page_1",
 					"payload": "supermarket_page_1_sephora_offer"
 				},
 				{
 					"title": "DUR",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/281.jpg",
 					"subtitle": "Κέρδισε τώρα επιπλέον έκπτωση 15% για όλη τη συλλογή της DUR!",
+					"current_page": "superamarkert_offers_page_1",
 					"payload": "supermarket_page_1_dur_offer"
 				},
 				{
 					"title": "ΑΡΜΑΟΣ",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/287.jpg",
 					"subtitle": "Κέρδισε 10% έκπτωση στις υπηρεσίες μετακόμισης!",
+					"current_page": "superamarkert_offers_page_1",
 					"payload": "supermarket_page_1_armaos_offer"
 				},
 				{
 					"title": "MATI MATI",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/253.jpg",
 					"subtitle": "Κέρδισε 15% έκπτωση στα καταστήματα οπτικών Μάτι Μάτι!",
+					"current_page": "superamarkert_offers_page_1",
 					"payload": "supermarket_page_1_matimati_offer"
 				},
 				 {"next_page":"supermarket_offers_page_2"}
@@ -191,9 +215,10 @@
 					"title": "ΠΑΙΧΝΙΔΙΑ ΜΟΥΣΤΑΚΑΣ Για την Οικογένεια",
 					"image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/229.jpg",
 					"subtitle": "Κέρδισε 10% στις αγορές σου στα καταστήματα Μουστάκας!",
-					"payload": "supermarket_page_2_moustakas_offer"
+					"payload": "supermarket_page_2_moustakas_offer",
+					"current_page":"supermarket_offers_page_2"
 				},
-		
+
 				 {"next_page":"supermarket_offers_page_0"}
 
 			]
@@ -206,24 +231,28 @@
 					 "title": "CINEMA",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/50.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο για οποιαδήποτε ταινία στο ODEON ή STER και πάρε άλλο 1 ΔΩΡΟ. ",
+					 "current_page": "entertainment_offers_page_0",
 					 "payload": "entertainment_page_0_cinema_offer"
 				 },
 				 {
 					 "title": "CINEMA Για την Οικογένεια",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/50.jpg",
 					 "subtitle": "Αγόρασε 2 εισιτήρια για οποιαδήποτε ταινία στο ODEON ή STER και πάρε άλλα 2 ΔΩΡΟ. ",
+					 "current_page": "entertainment_offers_page_0",
 					 "payload": "entertainment_page_0_cinemafamily_offer"
 				 },
 				 {
 					 "title": "BLUE STAR FERRIES Για την Οικογένεια",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/151.jpg",
 					 "subtitle": "Κερδίστε έκπτωση 50% στα εισιτήρια των διακοπών σας!",
+					 "current_page": "entertainment_offers_page_0",
 					 "payload": "entertainment_page_0_bluestarferriesfamily_offer"
 				 },
 				 {
 					 "title": "HOTELS.COM",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/142.jpg",
 					 "subtitle": "10% έκπτωση σε περισσότερα από 300.000 ξενοδοχεία σε όλο τον κόσμο!",
+					 "current_page": "entertainment_offers_page_0",
 					 "payload": "entertainment_page_0_hotels_offer"
 				 },
 					{"next_page":"entertainment_offers_page_1"}
@@ -236,24 +265,28 @@
 					 "title": "ΠΑΜΕ ΕΘΝΙΚΗ!",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/151.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 ΔΩΡΟ!",
+					 "current_page": "entertainment_offers_page_1",
 					 "payload": "entertainment_page_1_pamethniki_offer"
 				 },
 				 {
 					 "title": "airtickets® ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/288.png",
 					 "subtitle": "10€ έκπτωση στην κράτηση των αεροπορικών εισιτηρίων",
+					 "current_page": "entertainment_offers_page_1",
 					 "payload": "entertainment_page_1_airtickets_offer"
 				 },
 				 {
 					 "title": "YAVA",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/83.jpg",
 					 "subtitle": "Έκπτωση 20% για ετήσια συνδρομή άνω των 100€",
+					 "current_page": "entertainment_offers_page_1",
 					 "payload": "entertainment_page_1_yava_offer"
 				 },
 				 {
 					 "title": "ΘΕΡΙΣΜΟΣ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/257.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_1",
 					 "payload": "entertainment_page_1_parastasi1_offer"
 				 },
 					{"next_page":"entertainment_offers_page_2"}
@@ -266,24 +299,28 @@
 					 "title": "ΟΠΕΡΕΤΤΑ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/286.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_2",
 					 "payload": "entertainment_page_2_parastasi2_offer"
 				 },
 				 {
 					 "title": "ΟΛΗ Η ΕΛΛΑΔΑ ΓΙΑ ΤΟΝ ΜΙΚΗ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/291.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_2",
 					 "payload": "entertainment_page_2_parastasi3_offer"
 				 },
 				 {
 					 "title": "ΠΟΙΟΣ ΣΚΟΤΩΣΕ ΤΗΝ ΑΝΤΙΒΙΩΣΗ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/218.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_2",
 					 "payload": "entertainment_page_2_parastasi4_offer"
 				 },
 				 {
 					 "title": "Η ΤΑΞΗ ΜΑΣ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/289.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_2",
 					 "payload": "entertainment_page_2_parastasi5_offer"
 				 },
 					{"next_page":"entertainment_offers_page_3"}
@@ -296,24 +333,28 @@
 					 "title": "ΠΕΤΑΕΙ ΠΕΤΑΕΙ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/220.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_3",
 					 "payload": "entertainment_page_3_parastasi6_offer"
 				 },
 				 {
 					 "title": "ΠΟΙΟΣ ΦΟΒΑΤΑΙ ΤΗ ΒΙΡΤΖΙΝΙΑ ΓΟΥΛΦ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/235.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_3",
 					 "payload": "entertainment_page_3_parastasi7_offer"
 				 },
 				 {
 					 "title": "ΟΙ ΤΡΙΣΕΥΤΥΧΙΣΜΕΝΟΙ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/283.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_3",
 					 "payload": "entertainment_page_3_parastasi8_offer"
 				 },
 				 {
 					 "title": "Ο ΛΑΖΑΡΟΣ ΚΑΙ ΟΙ ΔΡΑΚΟΙ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/280.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο και πάρε άλλο 1 δώρο!",
+					 "current_page": "entertainment_offers_page_3",
 					 "payload": "entertainment_page_3_parastasi9_offer"
 				 },
 					{"next_page":"entertainment_offers_page_4"}
@@ -326,24 +367,28 @@
 					 "title": "BREEZE CAFE",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/163.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 1+1 ποτό!",
+					 "current_page": "entertainment_offers_page_4",
 					 "payload": "entertainment_page_4_breezecafe_offer"
 				 },
 				 {
 					 "title": "BOSS EXCLUSIVE COCKTAIL BAR",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/160.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 1+1 ρόφημα ΔΩΡΟ!",
+					 "current_page": "entertainment_offers_page_4",
 					 "payload": "entertainment_page_4_bosscoctailbar_offer"
 				 },
 				 {
 					 "title": "CRUISER",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/166.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 10% έκπτωση!",
+					 "current_page": "entertainment_offers_page_4",
 					 "payload": "entertainment_page_4_cruiser_offer"
 				 },
 				 {
 					 "title": "DUE CAVALIERI",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/155.jpg",
 					 "subtitle": "Τώρα έχεις 1+1 COCKTAIL ΔΩΡΟ στο Due Cavalieri!",
+					 "current_page": "entertainment_offers_page_4",
 					 "payload": "entertainment_page_4_duecavalieri_offer"
 				 },
 					{"next_page":"entertainment_offers_page_5"}
@@ -356,24 +401,28 @@
 					 "title": "CREMA MARTINI",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/164.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 1+1 hot dog",
+					 "current_page": "entertainment_offers_page_5",
 					 "payload": "entertainment_page_5_cremamartini_offer"
 				 },
 				 {
 					 "title": "HAAGEN DAZS",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/156.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 1+1 παγωτό!",
+					 "current_page": "entertainment_offers_page_5",
 					 "payload": "entertainment_page_5_haagendazs_offer"
 				 },
 				 {
 					 "title": "MARE MARINA RESTAURANT",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/161.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 20% έκπτωση στο σύνολο του λογαριασμού σου!",
+					 "current_page": "entertainment_offers_page_5",
 					 "payload": "entertainment_page_5_maremarinarestaurant_offer"
 				 },
 				 {
 					 "title": "YOGOLICIOUS",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/157.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 1+1 smoothies!",
+					 "current_page": "entertainment_offers_page_5",
 					 "payload": "entertainment_page_5_yogolicious_offer"
 				 },
 					{"next_page":"entertainment_offers_page_6"}
@@ -386,24 +435,28 @@
 					 "title": "NAPOLITIVO",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/168.jpg",
 					 "subtitle": "Mε την αγορά πίτσας, ΔΩΡΟ ένα ποτήρι κρασί!",
+					 "current_page": "entertainment_offers_page_6",
 					 "payload": "entertainment_page_6_napolitivo_offer"
 				 },
 				 {
 					 "title": "ΝΗΣΟΣ",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/158.jpg",
 					 "subtitle": "Απόλαυσε 10% έκπτωση στον τελικό λογαριασμό σου!",
+					 "current_page": "entertainment_offers_page_6",
 					 "payload": "entertainment_page_6_nhsos_offer"
 				 },
 				 {
 					 "title": "ORIGAMI SUSHI BAR",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/162.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 1+1 μπύρα ER BOQJERON!",
+					 "current_page": "entertainment_offers_page_6",
 					 "payload": "entertainment_page_6_origamisushibar_offer"
 				 },
 				 {
 					 "title": "OUTRUN",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/154.jpg",
 					 "subtitle": "Τώρα έχεις έκπτωση στο κατάστημα OUTRUN της ΜΑΡΙΝΑΣ ΦΛΟΙΣΒΟΥ!",
+					 "current_page": "entertainment_offers_page_6",
 					 "payload": "entertainment_page_6_outrun_offer"
 				 },
 					{"next_page":"entertainment_offers_page_7"}
@@ -416,24 +469,28 @@
 					 "title": "TGI FRIDAYS",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/167.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις μαργαρίτες στη χαμηλότερη τιμή!",
+					 "current_page": "entertainment_offers_page_7",
 					 "payload": "entertainment_page_7_tgi_offer"
 				 },
 				 {
 					 "title": "VOLTA FUN TOWN",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/159.jpg",
 					 "subtitle": "Τώρα απολαμβάνεις 1+1 είσοδο στην Παιχνιδοκατασκευή!",
+					 "current_page": "entertainment_offers_page_7",
 					 "payload": "entertainment_page_7_voltafuntown_offer"
 				 },
 				 {
 					 "title": "Χ.Α.Ν.Θ.",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/252.jpg",
 					 "subtitle": "Κέρδισε έκπτωση στις δραστηριότητες απασχόλησης παιδιών της Χ.Α.Ν.Θ.",
+					 "current_page": "entertainment_offers_page_7",
 					 "payload": "entertainment_page_7_xanth_offer"
 				 },
 				 {
 					 "title": "MAGIC PARK Για την Οικογένεια",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/54.jpg",
 					 "subtitle": "Αγόρασε 1 εισιτήριο για το MAGIC PARK στη Θεσσαλονίκη και πάρε άλλο 1 ΔΩΡΟ!",
+					 "current_page": "entertainment_offers_page_7",
 					 "payload": "entertainment_page_7_magicparkfamily_offer"
 				 },
 					{"next_page":"entertainment_offers_page_8"}
@@ -446,13 +503,12 @@
 					 "title": "Travel and more",
 					 "image_url": "https://thankyou.vodafone.gr/uploads/deals/thumbs/51.jpg",
 					 "subtitle": "Κλείσε τώρα διακοπές με 1+1 πακέτο διακοπών ΔΩΡΟ!",
-					 "payload": "entertainment_page_8_travel&more_offer"
+					 "payload": "entertainment_page_8_travel&more_offer",
+					 "current_page": "entertainment_offers_page_8"
 				 },
 
 
-
-
-					{"next_page":"entertainment_offers_page_0"}
+     			{"next_page":"entertainment_offers_page_0"}
 
 			 ]
 

@@ -13,9 +13,10 @@
 #get_user_id();
 
 #test_hash("10203981305669572","entertainment_offers_page_8");
-#functFun("γεια");
+print send_hash_list("11111111111","food_offers_page_0");
 #send_hash_list1("10203981305669572","entertainment_offers_page_8");
 #switchFun("hello my friend");
 #print get_json_phone_numbers("6978279525");
+#update_json_vodafone_phone_numbers();
 
 %>
